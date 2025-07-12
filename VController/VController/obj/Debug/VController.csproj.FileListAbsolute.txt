@@ -1,0 +1,15 @@
+C:\Users\User\source\repos\VController\VController\bin\Debug\VController.exe.config
+C:\Users\User\source\repos\VController\VController\bin\Debug\VController.exe
+C:\Users\User\source\repos\VController\VController\bin\Debug\VController.pdb
+C:\Users\User\source\repos\VController\VController\bin\Debug\Nefarius.ViGEm.Client.dll
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.csproj.AssemblyReference.cache
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.Properties.Resources.resources
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.csproj.GenerateResource.cache
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\VController\VController\obj\Debug\VControl.AA5F73CF.Up2Date
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.exe
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.pdb
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.exe.config
+C:\Users\User\source\repos\VController\VController\bin\Debug\System.ValueTuple.dll
+C:\Users\User\source\repos\VController\VController\bin\Debug\Tulpep.NotificationWindow.dll
+C:\Users\User\source\repos\VController\VController\obj\Debug\VController.VController.resources
