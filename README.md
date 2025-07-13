@@ -38,4 +38,4 @@ https://virusscan.jotti.org/fr-FR/filescanjob/2kqs8gxgzn
 
 🎉 Enjoy
 
-This application uses ViGEm Bus Driver, developed by Nefarius Software Solutions. Licensed under the MIT License.
+This application uses ViGEm Bus Driver, developed by Nefarius Software Solutions. Licensed under the MIT License. https://github.com/nefarius/ViGEmBus/releases
