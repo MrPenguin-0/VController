@@ -29,3 +29,5 @@ VController was created to help users with alternative input needs, testing setu
 If VController isn’t working as expected, check that all drivers are correctly installed, especially ViGEmBus. Restarting your PC or running the app as administrator can solve common issues.
 
 🎉 Enjoy
+
+This application uses ViGEm Bus Driver, developed by Nefarius Software Solutions. Licensed under the MIT License.
