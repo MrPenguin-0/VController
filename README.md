@@ -17,7 +17,7 @@ VController simulates a virtual Xbox 360 controller and supports mapping mouse a
 By using VController, you agree not to use the software for illegal or malicious purposes, not to misrepresent the origin of the software, and not to redistribute it without providing appropriate credit.
 
 🧪 Compatibility
-VController currently supports Windows 10/11 (64-bit) and requires the ViGEmBus driver to emulate a virtual Xbox 360 controller. Please ensure you have all dependencies installed for the app to function as intended.
+VController currently supports Windows 10/11 and requires the ViGEmBus driver to emulate a virtual Xbox 360 controller. Please ensure you have all dependencies installed for the app to function as intended.
 
 🔒 Privacy
 VController does not collect, store, or transmit any personal data. All processing occurs locally on your machine. Your privacy is fully respected.
