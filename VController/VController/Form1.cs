@@ -1,25 +1,30 @@
-﻿using System;
+﻿using Nefarius.ViGEm.Client;
+using Nefarius.ViGEm.Client.Targets;
+using Nefarius.ViGEm.Client.Targets.Xbox360;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
-using Nefarius.ViGEm.Client;
-using Nefarius.ViGEm.Client.Targets;
-using Nefarius.ViGEm.Client.Targets.Xbox360;
-using Tulpep.NotificationWindow;
 using System.Timers;
-using System.Diagnostics;
-using System.IO;
+using System.Windows.Forms;
+using Tulpep.NotificationWindow;
 
 namespace VController
 {
     public partial class VController : Form
     {
+        // Add this with your other constants at the top of the class
+        private const float macroSensitivityX = 500f; // Much higher sensitivity for the macro
+        private bool is360MacroActive = false; // Track if macro is enabled
+
         private Xbox360Button mappedDPadUpButton = Xbox360Button.Up;
         private Keys? mappedKeyForDPadUp = null;
         private int? mappedMouseForDPadUp = null; // 0 = Left Click, 1 = Right Click
@@ -83,6 +88,7 @@ namespace VController
         private const int RIM_TYPEMOUSE = 0;
 
         [StructLayout(LayoutKind.Sequential)]
+
         struct RAWINPUTDEVICELIST
         {
             public IntPtr hDevice;
@@ -167,6 +173,7 @@ namespace VController
         private System.Timers.Timer inputTimer;
         private bool isRunning = false;
         private bool isPaused = false;
+        private bool show360MacroNotification = true; // default to showing notifications
 
         public Point mouseLocation;
 
@@ -288,6 +295,76 @@ namespace VController
                         mappedKeyForSelect = key;
                     break;
             }
+        }
+
+        private void SaveSettings()
+        {
+            Properties.Settings.Default.Sensitivity = sensitivityTrackBar.Value; // Sensitivity value
+            Properties.Settings.Default.LB_Key = textBox3.Text;
+            Properties.Settings.Default.DPadUp_Key = textBox9.Text;
+            Properties.Settings.Default.DPadLeft_Key = textBox10.Text;
+            Properties.Settings.Default.DPadDown_Key = textBox13.Text;
+            Properties.Settings.Default.DPadRight_Key = textBox20.Text;
+            Properties.Settings.Default.RightStick_Key = textBox21.Text;
+            Properties.Settings.Default.A_Key = textBox19.Text;
+            Properties.Settings.Default.B_Key = textBox17.Text;
+            Properties.Settings.Default.Y_Key = textBox16.Text;
+            Properties.Settings.Default.X_Key = textBox14.Text;
+            Properties.Settings.Default.RB_Key = textBox4.Text;
+            Properties.Settings.Default.RT_Key = textBox2.Text;
+            Properties.Settings.Default.LT_Key = textBox1.Text;
+            Properties.Settings.Default.Start_Key = textBox11.Text;
+            Properties.Settings.Default.Select_Key = textBox12.Text;
+
+            Properties.Settings.Default.Save();
+        }
+        private void UpdateSensitivityFromTrackbar()
+        {
+            // Map trackbar value (1-10) to sensitivity multiplier (0.5x-2.0x)
+            float sensitivityMultiplier = 0.5f + (sensitivityTrackBar.Value - 1) * 0.1667f;
+
+            currentMouseSensitivityX = baseMouseSensitivityX * sensitivityMultiplier;
+            currentMouseSensitivityY = baseMouseSensitivityY * sensitivityMultiplier;
+
+            UpdateSensitivityLabel();
+        }
+        private void LoadSettings()
+        {
+            // Load sensitivity first
+            sensitivityTrackBar.Value = Properties.Settings.Default.Sensitivity;
+            UpdateSensitivityFromTrackbar(); // This will set currentMouseSensitivityX/Y based on trackbar value
+            textBox3.Text = Properties.Settings.Default.LB_Key;
+            textBox9.Text = Properties.Settings.Default.DPadUp_Key;
+            textBox10.Text = Properties.Settings.Default.DPadLeft_Key;
+            textBox13.Text = Properties.Settings.Default.DPadDown_Key;
+            textBox20.Text = Properties.Settings.Default.DPadRight_Key;
+            textBox21.Text = Properties.Settings.Default.RightStick_Key;
+            textBox19.Text = Properties.Settings.Default.A_Key;
+            textBox17.Text = Properties.Settings.Default.B_Key;
+            textBox16.Text = Properties.Settings.Default.Y_Key;
+            textBox14.Text = Properties.Settings.Default.X_Key;
+            textBox4.Text = Properties.Settings.Default.RB_Key;
+            textBox2.Text = Properties.Settings.Default.RT_Key;
+            textBox1.Text = Properties.Settings.Default.LT_Key;
+            textBox11.Text = Properties.Settings.Default.Start_Key;
+            textBox12.Text = Properties.Settings.Default.Select_Key;
+
+            // Update all key mappings after loading
+            UpdateLBKeyMapping();
+            UpdateDPadUpKeyMapping();
+            UpdateDPadLeftKeyMapping();
+            UpdateDPadDownKeyMapping();
+            UpdateDPadRightKeyMapping();
+            UpdateRightStickKeyMapping();
+            UpdateAButtonKeyMapping();
+            UpdateBButtonKeyMapping();
+            UpdateYButtonKeyMapping();
+            UpdateXButtonKeyMapping();
+            UpdateRBKeyMapping();
+            UpdateRTKeyMapping();
+            UpdateLTKeyMapping();
+            UpdateStartKeyMapping();
+            UpdateSelectKeyMapping();
         }
 
         private void UpdateRTKeyMapping()
@@ -623,6 +700,16 @@ namespace VController
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            // Trackbar setup
+            sensitivityTrackBar.Minimum = 1;
+            sensitivityTrackBar.Maximum = 10;
+            sensitivityTrackBar.Value = 4; // Default value
+            sensitivityTrackBar.Scroll += SensitivityTrackBar_Scroll;
+
+            checkBox11.Checked = true; // Linear by default
+            currentSmoothingMode = SmoothingMode.Linear;
+            AdvancedSettingsPanel.Hide();
+
             RAWINPUTDEVICE[] rid = new RAWINPUTDEVICE[1];
             rid[0].usUsagePage = 0x01;  // Generic desktop controls
             rid[0].usUsage = 0x02;      // Mouse
@@ -641,6 +728,9 @@ namespace VController
             RegisterHotKey(this.Handle, HOTKEY_ID, 0, Keys.F6);
             RegisterHotKey(this.Handle, HOTKEY_ID_HOME, 0, Keys.Home);
 
+            // Load saved settings
+            LoadSettings();
+
             UpdateLBKeyMapping();
             UpdateDPadUpKeyMapping();
             UpdateDPadLeftKeyMapping();
@@ -657,6 +747,11 @@ namespace VController
             UpdateStartKeyMapping();
             UpdateSelectKeyMapping();
         }
+
+        // Add these class-level variables somewhere in your class (adjust size as needed)
+        private bool[] _previousButtonStates = new bool[16]; // Make sure array size matches number of buttons you track
+        private short _previousLX = 0, _previousLY = 0;
+        private byte _previousRT = 0, _previousLT = 0;
 
         protected override void WndProc(ref Message m)
         {
@@ -677,21 +772,36 @@ namespace VController
                     int deltaX = raw.mouse.lLastX;
                     int deltaY = raw.mouse.lLastY;
 
-                    // Calcul linéaire avec sensibilité adaptée
-                    float targetRX = deltaX * mouseSensitivityX;
-                    float targetRY = -deltaY * mouseSensitivityY;
+                    // Calculate adaptive smoothing based on movement speed
+                    float smoothingFactor = CalculateAdaptiveSmoothing(deltaX, deltaY);
 
-                    // Smoothing adaptatif : plus le mouvement est grand, plus on réagit vite
-                    float magnitude = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
-                    float smoothingFactor = Clamp(0.05f + (magnitude / 20f), 0.05f, 0.3f);
+                    // Use current sensitivity values instead of constants
+                    float targetRX = deltaX * currentMouseSensitivityX;
+                    float targetRY = -deltaY * currentMouseSensitivityY;
 
-                    smoothedRX += (targetRX - smoothedRX) * smoothingFactor;
-                    smoothedRY += (targetRY - smoothedRY) * smoothingFactor;
+                    // Apply response curve to target values
+                    targetRX = ApplyResponseCurve(targetRX, currentCurveType);
+                    targetRY = ApplyResponseCurve(targetRY, currentCurveType);
 
-                    // Deadzone avec interpolation douce vers zéro
+                    // Apply selected smoothing mode with adaptive factor
+                    switch (currentSmoothingMode)
+                    {
+                        case SmoothingMode.Linear:
+                            smoothedRX = LinearInterpolation(smoothedRX, targetRX, smoothingFactor);
+                            smoothedRY = LinearInterpolation(smoothedRY, targetRY, smoothingFactor);
+                            break;
+
+                        case SmoothingMode.Exponential:
+                            smoothedRX = ExponentialSmoothing(smoothedRX, targetRX, smoothingFactor);
+                            smoothedRY = ExponentialSmoothing(smoothedRY, targetRY, smoothingFactor);
+                            break;
+                    }
+
+                    // Apply deadzone with smooth transition
                     smoothedRX = ApplyDeadzoneWithLerp(smoothedRX, deadzoneThreshold);
                     smoothedRY = ApplyDeadzoneWithLerp(smoothedRY, deadzoneThreshold);
 
+                    // Clamp final values
                     short outputRX = (short)Clamp(smoothedRX, -maxAnalog, maxAnalog);
                     short outputRY = (short)Clamp(smoothedRY, -maxAnalog, maxAnalog);
 
@@ -701,7 +811,7 @@ namespace VController
 
                 Marshal.FreeHGlobal(buffer);
             }
-            else if (m.Msg == WM_HOTKEY)
+                    else if (m.Msg == WM_HOTKEY)
             {
                 int id = m.WParam.ToInt32();
                 if (id == HOTKEY_ID)
@@ -711,6 +821,24 @@ namespace VController
             }
 
             base.WndProc(ref m);
+        }
+        private float GetSmoothingFactor(float magnitude)
+        {
+            float baseFactor;
+
+            if (currentSmoothingMode == SmoothingMode.Linear)
+            {
+                baseFactor = 0.2f; // More direct response for linear
+            }
+            else // Exponential
+            {
+                baseFactor = 0.1f; // Slower response for exponential
+            }
+
+            // Adaptive adjustment based on movement speed
+            return Clamp(baseFactor * (1 - (float)Math.Exp(-magnitude / 50f)),
+                        minSmoothing,
+                        maxSmoothing);
         }
 
         private float ApplyDeadzoneWithLerp(float value, float deadzone)
@@ -727,6 +855,7 @@ namespace VController
 
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
+            SaveSettings(); // Save settings before closing
             UnregisterHotKey(this.Handle, HOTKEY_ID);
             UnregisterHotKey(this.Handle, HOTKEY_ID_HOME);
             base.OnFormClosing(e);
@@ -807,7 +936,6 @@ namespace VController
                 isRunning = true;
                 isPaused = false;
                 startButton.Text = "STOP (F6)";
-                Cursor.Hide();
 
                 if (checkBox2.Checked)
                     ShowCustomNotification("Xbox 360 Controller for Windows", "Connected");
@@ -823,7 +951,6 @@ namespace VController
 
                 isRunning = false;
                 startButton.Text = "START (F6)";
-                Cursor.Show();
 
                 if (checkBox2.Checked)
                     ShowCustomNotification("Xbox 360 Controller for Windows", "Disconnected");
@@ -852,189 +979,111 @@ namespace VController
         {
             return Math.Max(min, Math.Min(max, value));
         }
+        // Updated InputTimer_Tick:
         private void InputTimer_Tick(object sender, ElapsedEventArgs e)
         {
             if (isPaused) return;
 
+            // Process left thumbstick input
             short lx = 0, ly = 0;
             if (GetAsyncKeyState(Keys.W) < 0) ly += 32767;
             if (GetAsyncKeyState(Keys.S) < 0) ly -= 32767;
             if (GetAsyncKeyState(Keys.A) < 0) lx -= 32767;
             if (GetAsyncKeyState(Keys.D) < 0) lx += 32767;
 
-            controller?.SetAxisValue(Xbox360Axis.LeftThumbX, lx);
-            controller?.SetAxisValue(Xbox360Axis.LeftThumbY, ly);
+            if (lx != _previousLX || ly != _previousLY)
+            {
+                controller?.SetAxisValue(Xbox360Axis.LeftThumbX, lx);
+                controller?.SetAxisValue(Xbox360Axis.LeftThumbY, ly);
+                _previousLX = lx;
+                _previousLY = ly;
+            }
 
-            // 👇 Check for LB emulation from key/mouse
-            bool lbPressed = false;
+            // Update buttons using helper method and previous states to avoid redundant updates
+            UpdateButtonState(mappedLBButton, GetButtonState(mappedKeyForLB, mappedMouseForLB), 0);
+            UpdateButtonState(mappedDPadUpButton, GetButtonState(mappedKeyForDPadUp, mappedMouseForDPadUp), 1);
+            UpdateButtonState(mappedDPadLeftButton, GetButtonState(mappedKeyForDPadLeft, mappedMouseForDPadLeft), 2);
+            UpdateButtonState(mappedDPadDownButton, GetButtonState(mappedKeyForDPadDown, mappedMouseForDPadDown), 3);
+            UpdateButtonState(mappedDPadRightButton, GetButtonState(mappedKeyForDPadRight, mappedMouseForDPadRight), 4);
+            UpdateButtonState(mappedRightStickButton, GetButtonState(mappedKeyForRightStick, mappedMouseForRightStick), 5);
+            UpdateButtonState(mappedAButton, GetButtonState(mappedKeyForA, mappedMouseForA), 6);
+            UpdateButtonState(mappedBButton, GetButtonState(mappedKeyForB, mappedMouseForB), 7);
+            UpdateButtonState(mappedYButton, GetButtonState(mappedKeyForY, mappedMouseForY), 8);
+            UpdateButtonState(mappedXButton, GetButtonState(mappedKeyForX, mappedMouseForX), 9);
+            UpdateButtonState(mappedRBButton, GetButtonState(mappedKeyForRB, mappedMouseForRB), 10);
+            UpdateButtonState(mappedStartButton, GetButtonState(mappedKeyForStart, mappedMouseForStart), 11);
+            UpdateButtonState(mappedSelectButton, GetButtonState(mappedKeyForSelect, mappedMouseForSelect), 12);
 
-            if (mappedKeyForLB.HasValue && GetAsyncKeyState(mappedKeyForLB.Value) < 0)
-                lbPressed = true;
-            else if (mappedMouseForLB == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                lbPressed = true;
-            else if (mappedMouseForLB == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                lbPressed = true;
+            // Process triggers with previous value checks
+            byte rtValue = GetTriggerState(mappedKeyForRT, mappedMouseForRT);
+            if (rtValue != _previousRT)
+            {
+                controller?.SetSliderValue(Xbox360Slider.RightTrigger, rtValue);
+                _previousRT = rtValue;
+            }
 
-            if (lbPressed)
-                controller?.SetButtonState(mappedLBButton, true);
-            else
-                controller?.SetButtonState(mappedLBButton, false);
-            // 👇 Check for DPad_Up emulation from key/mouse
-            bool dpadUpPressed = false;
-
-            if (mappedKeyForDPadUp.HasValue && GetAsyncKeyState(mappedKeyForDPadUp.Value) < 0)
-                dpadUpPressed = true;
-            else if (mappedMouseForDPadUp == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                dpadUpPressed = true;
-            else if (mappedMouseForDPadUp == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                dpadUpPressed = true;
-
-            controller?.SetButtonState(mappedDPadUpButton, dpadUpPressed);
-            // 👇 Check for DPad_Left emulation from key/mouse
-            bool dpadLeftPressed = false;
-
-            if (mappedKeyForDPadLeft.HasValue && GetAsyncKeyState(mappedKeyForDPadLeft.Value) < 0)
-                dpadLeftPressed = true;
-            else if (mappedMouseForDPadLeft == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                dpadLeftPressed = true;
-            else if (mappedMouseForDPadLeft == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                dpadLeftPressed = true;
-
-            controller?.SetButtonState(mappedDPadLeftButton, dpadLeftPressed);
-            // 👇 Check for DPad_Down emulation from key/mouse
-            bool dpadDownPressed = false;
-
-            if (mappedKeyForDPadDown.HasValue && GetAsyncKeyState(mappedKeyForDPadDown.Value) < 0)
-                dpadDownPressed = true;
-            else if (mappedMouseForDPadDown == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                dpadDownPressed = true;
-            else if (mappedMouseForDPadDown == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                dpadDownPressed = true;
-
-            controller?.SetButtonState(mappedDPadDownButton, dpadDownPressed);
-            // 👇 Check for DPad_Right emulation from key/mouse
-            bool dpadRightPressed = false;
-
-            if (mappedKeyForDPadRight.HasValue && GetAsyncKeyState(mappedKeyForDPadRight.Value) < 0)
-                dpadRightPressed = true;
-            else if (mappedMouseForDPadRight == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                dpadRightPressed = true;
-            else if (mappedMouseForDPadRight == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                dpadRightPressed = true;
-
-            controller?.SetButtonState(mappedDPadRightButton, dpadRightPressed);
-            // 👇 Check for RightStick emulation from key/mouse
-            bool rightStickPressed = false;
-
-            if (mappedKeyForRightStick.HasValue && GetAsyncKeyState(mappedKeyForRightStick.Value) < 0)
-                rightStickPressed = true;
-            else if (mappedMouseForRightStick == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                rightStickPressed = true;
-            else if (mappedMouseForRightStick == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                rightStickPressed = true;
-
-            controller?.SetButtonState(mappedRightStickButton, rightStickPressed);
-            // 👇 Check for A button emulation from key/mouse
-            bool aPressed = false;
-
-            if (mappedKeyForA.HasValue && GetAsyncKeyState(mappedKeyForA.Value) < 0)
-                aPressed = true;
-            else if (mappedMouseForA == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                aPressed = true;
-            else if (mappedMouseForA == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                aPressed = true;
-
-            controller?.SetButtonState(mappedAButton, aPressed);
-            // 👇 Check for B button emulation from key/mouse
-            bool bPressed = false;
-
-            if (mappedKeyForB.HasValue && GetAsyncKeyState(mappedKeyForB.Value) < 0)
-                bPressed = true;
-            else if (mappedMouseForB == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                bPressed = true;
-            else if (mappedMouseForB == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                bPressed = true;
-
-            controller?.SetButtonState(mappedBButton, bPressed);
-            // 👇 Check for Y button emulation from key/mouse
-            bool yPressed = false;
-
-            if (mappedKeyForY.HasValue && GetAsyncKeyState(mappedKeyForY.Value) < 0)
-                yPressed = true;
-            else if (mappedMouseForY == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                yPressed = true;
-            else if (mappedMouseForY == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                yPressed = true;
-
-            controller?.SetButtonState(mappedYButton, yPressed);
-            // 👇 Check for X button emulation from key/mouse
-            bool xPressed = false;
-
-            if (mappedKeyForX.HasValue && GetAsyncKeyState(mappedKeyForX.Value) < 0)
-                xPressed = true;
-            else if (mappedMouseForX == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                xPressed = true;
-            else if (mappedMouseForX == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                xPressed = true;
-
-            controller?.SetButtonState(mappedXButton, xPressed);
-            // 👇 Check for RB emulation from key/mouse
-            bool rbPressed = false;
-
-            if (mappedKeyForRB.HasValue && GetAsyncKeyState(mappedKeyForRB.Value) < 0)
-                rbPressed = true;
-            else if (mappedMouseForRB == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                rbPressed = true;
-            else if (mappedMouseForRB == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                rbPressed = true;
-
-            controller?.SetButtonState(mappedRBButton, rbPressed);
-            // 👇 Check for RT emulation from key/mouse
-            byte rtValue = 0;
-
-            if (mappedKeyForRT.HasValue && GetAsyncKeyState(mappedKeyForRT.Value) < 0)
-                rtValue = 255;
-            else if (mappedMouseForRT == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                rtValue = 255;
-            else if (mappedMouseForRT == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                rtValue = 255;
-
-            controller?.SetSliderValue(Xbox360Slider.RightTrigger, rtValue);
-            // 👇 Check for LT emulation from key/mouse
-            byte ltValue = 0;
-
-            if (mappedKeyForLT.HasValue && GetAsyncKeyState(mappedKeyForLT.Value) < 0)
-                ltValue = 255;
-            else if (mappedMouseForLT == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                ltValue = 255;
-            else if (mappedMouseForLT == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                ltValue = 255;
-
-            controller?.SetSliderValue(Xbox360Slider.LeftTrigger, ltValue);
-            // 👇 Check for START emulation from key/mouse
-            bool startPressed = false;
-
-            if (mappedKeyForStart.HasValue && GetAsyncKeyState(mappedKeyForStart.Value) < 0)
-                startPressed = true;
-            else if (mappedMouseForStart == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                startPressed = true;
-            else if (mappedMouseForStart == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                startPressed = true;
-
-            controller?.SetButtonState(mappedStartButton, startPressed);
-            // 👇 Check for SELECT/BACK emulation from key/mouse
-            bool selectPressed = false;
-
-            if (mappedKeyForSelect.HasValue && GetAsyncKeyState(mappedKeyForSelect.Value) < 0)
-                selectPressed = true;
-            else if (mappedMouseForSelect == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
-                selectPressed = true;
-            else if (mappedMouseForSelect == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
-                selectPressed = true;
-
-            controller?.SetButtonState(mappedSelectButton, selectPressed);
+            byte ltValue = GetTriggerState(mappedKeyForLT, mappedMouseForLT);
+            if (ltValue != _previousLT)
+            {
+                controller?.SetSliderValue(Xbox360Slider.LeftTrigger, ltValue);
+                _previousLT = ltValue;
+            }
+        }
+        // Helper method to get button state (key or mouse)
+        private bool GetButtonState(Keys? mappedKey, int? mappedMouse)
+        {
+            if (mappedKey.HasValue && GetAsyncKeyState(mappedKey.Value) < 0)
+                return true;
+            if (mappedMouse == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
+                return true;
+            if (mappedMouse == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
+                return true;
+            return false;
         }
 
+        // Helper method to get trigger value (255 if pressed, else 0)
+        private byte GetTriggerState(Keys? mappedKey, int? mappedMouse)
+        {
+            if (mappedKey.HasValue && GetAsyncKeyState(mappedKey.Value) < 0)
+                return 255;
+            if (mappedMouse == 0 && Control.MouseButtons.HasFlag(MouseButtons.Left))
+                return 255;
+            if (mappedMouse == 1 && Control.MouseButtons.HasFlag(MouseButtons.Right))
+                return 255;
+            return 0;
+        }
+
+        // Helper to update button state only if changed
+        private void UpdateButtonState(Xbox360Button button, bool currentState, int stateIndex)
+        {
+            if (currentState != _previousButtonStates[stateIndex])
+            {
+                controller?.SetButtonState(button, currentState);
+                _previousButtonStates[stateIndex] = currentState;
+            }
+        }
+        private async void Perform360Macro()
+        {
+            if (controller == null) return;
+
+            int steps = 36; // Number of incremental steps for a smooth rotation
+            int delayMs = 15; // delay between each step (adjust for speed)
+            float maxValue = 32767f; // max thumbstick value
+
+            // Rotate right: from 0 to max
+            for (int i = 0; i <= steps; i++)
+            {
+                float value = (float)i / steps * maxValue;
+                controller.SetAxisValue(Xbox360Axis.RightThumbX, (short)value);
+                await Task.Delay(delayMs);
+            }
+
+            // Optional: hold at max for a moment for a more natural turn
+            await Task.Delay(100);
+
+            // Return to center
+            controller.SetAxisValue(Xbox360Axis.RightThumbX, 0);
+        }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
@@ -1042,6 +1091,13 @@ namespace VController
                 ToggleVirtualController();
             else if (e.KeyCode == Keys.Home)
                 TogglePause();
+
+            // Check if 360 macro is active and '3' is pressed
+            if (is360MacroActive && e.KeyCode == Keys.D3)
+            {
+                Perform360Macro();
+                e.Handled = true; // Prevent default behavior if needed
+            }
         }
 
         private void button1_Click(object sender, EventArgs e) => ToggleVirtualController();
@@ -1285,7 +1341,167 @@ namespace VController
             textBox11.Text = "ESC";
             textBox12.Text = "M";
         }
+        // Add these with your other constants
+        private enum ResponseCurveType { Linear, Exponential, Logarithmic, Custom }
+        private ResponseCurveType currentCurveType = ResponseCurveType.Logarithmic; // instead of Exponential
 
+        // Curve parameters
+        private const float expCurveStrength = 2.0f; // Higher = more aggressive curve
+        private const float logCurveStrength = 0.3f; // Smaller values increase sensitivity for small inputs
+        private const float customCurveMidpoint = 0.5f; // Adjust as needed
+        private const float customCurveSteepness = 2.0f; // Adjust as needed
+
+        // Adaptive smoothing parameters
+        private const float minSmoothing = 0.05f; // For slow movements
+        private const float maxSmoothing = 0.3f; // For fast movements
+        private const float smoothingTransitionSpeed = 0.1f; // How quickly smoothing adjusts
+        private float ApplyResponseCurve(float input, ResponseCurveType curveType)
+        {
+            // Normalize input to 0-1 range
+            float normalized = Math.Abs(input) / maxAnalog;
+            float result = 0f;
+
+            switch (curveType)
+            {
+                case ResponseCurveType.Linear:
+                    result = normalized;
+                    break;
+
+                case ResponseCurveType.Exponential:
+                    result = (float)Math.Pow(normalized, expCurveStrength);
+                    break;
+
+                case ResponseCurveType.Logarithmic:
+                    result = (float)Math.Log(normalized * (Math.E - 1) + 1) * logCurveStrength;
+                    break;
+
+                case ResponseCurveType.Custom:
+                    // Custom sigmoid-like curve
+                    result = (float)(1 / (1 + Math.Exp(-customCurveSteepness * (normalized - customCurveMidpoint))));
+                    break;
+            }
+
+            // Scale back to original range and preserve sign
+            return Math.Sign(input) * result * maxAnalog;
+        }
+
+        private float CalculateAdaptiveSmoothing(float deltaX, float deltaY)
+        {
+            // Calculate movement magnitude
+            float magnitude = (float)Math.Sqrt(deltaX * deltaX + deltaY * deltaY);
+
+            // Map magnitude to smoothing factor (non-linear mapping)
+            float smoothing = minSmoothing + (maxSmoothing - minSmoothing) *
+                             (1 - (float)Math.Exp(-magnitude / 50f)); // Adjust divisor as needed
+
+            return Clamp(smoothing, minSmoothing, maxSmoothing);
+        }
+
+        private void panel25_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void AdvancedSettingsPanel_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            AdvancedSettingsPanel.Show();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            AdvancedSettingsPanel.Hide();
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
+        //Smoothing modes
+        private enum SmoothingMode { Linear, Exponential }
+        private SmoothingMode currentSmoothingMode = SmoothingMode.Linear;
+        private float LinearInterpolation(float current, float target, float factor)
+        {
+            return current + (target - current) * factor;
+        }
+
+        private float ExponentialSmoothing(float current, float target, float factor)
+        {
+            // Exponential smoothing formula: Sₜ = αYₜ + (1-α)Sₜ₋₁
+            return factor * target + (1 - factor) * current;
+        }
+        private void checkBox11_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox11.Checked)
+            {
+                checkBox10.Checked = false;
+                currentSmoothingMode = SmoothingMode.Linear;
+            }
+        }
+
+        private void checkBox10_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox10.Checked)
+            {
+                checkBox11.Checked = false;
+                currentSmoothingMode = SmoothingMode.Exponential;
+            }
+        }
+        //Sensitivity controller
+        private const float baseMouseSensitivityX = 200f;
+        private const float baseMouseSensitivityY = 200f;
+        private float currentMouseSensitivityX = baseMouseSensitivityX;
+        private float currentMouseSensitivityY = baseMouseSensitivityY;
+        private void UpdateSensitivityLabel()
+        {
+            sensitivityLabel.Text = $"Sensitivity: {sensitivityTrackBar.Value}";
+        }
+        private void SensitivityTrackBar_Scroll(object sender, EventArgs e)
+        {
+            // Map trackbar value (1-10) to sensitivity multiplier (0.5x-2.0x)
+            float sensitivityMultiplier = 0.5f + (sensitivityTrackBar.Value - 1) * 0.1667f;
+
+            currentMouseSensitivityX = baseMouseSensitivityX * sensitivityMultiplier;
+            currentMouseSensitivityY = baseMouseSensitivityY * sensitivityMultiplier;
+
+            // Shows current sensitivity
+            sensitivityLabel.Text = $"Sensitivity: {sensitivityTrackBar.Value}";
+
+            // Saves
+            UpdateSensitivityFromTrackbar();
+        }
+
+        private void sensitivityTrackBar_Scroll(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBox7_CheckedChanged(object sender, EventArgs e)
+        {
+            is360MacroActive = checkBox7.Checked;
+            if (is360MacroActive && show360MacroNotification)
+            {
+                ShowCustomNotification("360 Macro", "Activated");
+            }
+            else if (!is360MacroActive && show360MacroNotification)
+            {
+                ShowCustomNotification("360 Macro", "Deactivated");
+            }
+        }
+
+        private void checkBox9_CheckedChanged(object sender, EventArgs e)
+{
+    show360MacroNotification = checkBox9.Checked;
+    if (!show360MacroNotification && checkBox7.Checked)
+    {
+        // Notify that 360 Macro notifications are now disabled
+        ShowCustomNotification("360 Macro", "Notifications Disabled");
+    }
+}
         private void pictureBox1_Click(object sender, EventArgs e) { }
     }
 }

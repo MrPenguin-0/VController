@@ -75,6 +75,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.panel23 = new System.Windows.Forms.Panel();
+            this.checkBox9 = new System.Windows.Forms.CheckBox();
+            this.checkBox7 = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -96,6 +98,7 @@
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.label9 = new System.Windows.Forms.Label();
             this.panel27 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.pictureBox27 = new System.Windows.Forms.PictureBox();
             this.pictureBox23 = new System.Windows.Forms.PictureBox();
             this.pictureBox24 = new System.Windows.Forms.PictureBox();
@@ -123,7 +126,17 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.button9 = new System.Windows.Forms.Button();
+            this.AdvancedSettingsPanel = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
+            this.button10 = new System.Windows.Forms.Button();
+            this.checkBox10 = new System.Windows.Forms.CheckBox();
+            this.checkBox11 = new System.Windows.Forms.CheckBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.sensitivityTrackBar = new System.Windows.Forms.TrackBar();
+            this.sensitivityLabel = new System.Windows.Forms.Label();
+            this.checkBox12 = new System.Windows.Forms.CheckBox();
+            this.label12 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel23.SuspendLayout();
             this.panel25.SuspendLayout();
@@ -155,6 +168,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.AdvancedSettingsPanel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).BeginInit();
             this.SuspendLayout();
             // 
             // startButton
@@ -636,6 +651,11 @@
             // 
             // panel23
             // 
+            this.panel23.Controls.Add(this.AdvancedSettingsPanel);
+            this.panel23.Controls.Add(this.panel25);
+            this.panel23.Controls.Add(this.button9);
+            this.panel23.Controls.Add(this.checkBox9);
+            this.panel23.Controls.Add(this.checkBox7);
             this.panel23.Controls.Add(this.label8);
             this.panel23.Controls.Add(this.label7);
             this.panel23.Controls.Add(this.label6);
@@ -652,11 +672,41 @@
             this.panel23.Controls.Add(this.label2);
             this.panel23.Controls.Add(this.checkBox1);
             this.panel23.Controls.Add(this.button7);
-            this.panel23.Location = new System.Drawing.Point(-5, 562);
+            this.panel23.Location = new System.Drawing.Point(-5, 569);
             this.panel23.Name = "panel23";
             this.panel23.Size = new System.Drawing.Size(840, 567);
             this.panel23.TabIndex = 68;
             this.panel23.Paint += new System.Windows.Forms.PaintEventHandler(this.panel23_Paint_1);
+            // 
+            // checkBox9
+            // 
+            this.checkBox9.AutoSize = true;
+            this.checkBox9.Checked = true;
+            this.checkBox9.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox9.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox9.ForeColor = System.Drawing.Color.White;
+            this.checkBox9.Location = new System.Drawing.Point(43, 389);
+            this.checkBox9.Name = "checkBox9";
+            this.checkBox9.Size = new System.Drawing.Size(163, 25);
+            this.checkBox9.TabIndex = 86;
+            this.checkBox9.Text = "360 Macro ON/OFF";
+            this.checkBox9.UseVisualStyleBackColor = true;
+            this.checkBox9.CheckedChanged += new System.EventHandler(this.checkBox9_CheckedChanged);
+            // 
+            // checkBox7
+            // 
+            this.checkBox7.AutoSize = true;
+            this.checkBox7.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox7.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox7.ForeColor = System.Drawing.Color.White;
+            this.checkBox7.Location = new System.Drawing.Point(598, 271);
+            this.checkBox7.Name = "checkBox7";
+            this.checkBox7.Size = new System.Drawing.Size(101, 25);
+            this.checkBox7.TabIndex = 85;
+            this.checkBox7.Text = "360 Macro";
+            this.checkBox7.UseVisualStyleBackColor = true;
+            this.checkBox7.CheckedChanged += new System.EventHandler(this.checkBox7_CheckedChanged);
             // 
             // label8
             // 
@@ -787,9 +837,9 @@
             this.label4.ForeColor = System.Drawing.Color.White;
             this.label4.Location = new System.Drawing.Point(629, 54);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(122, 30);
+            this.label4.Size = new System.Drawing.Size(108, 30);
             this.label4.TabIndex = 74;
-            this.label4.Text = "ADVANCED";
+            this.label4.Text = "ADD-ONS";
             // 
             // panel26
             // 
@@ -868,6 +918,7 @@
             this.panel25.Name = "panel25";
             this.panel25.Size = new System.Drawing.Size(387, 144);
             this.panel25.TabIndex = 69;
+            this.panel25.Paint += new System.Windows.Forms.PaintEventHandler(this.panel25_Paint);
             // 
             // button8
             // 
@@ -917,11 +968,22 @@
             this.panel27.Controls.Add(this.pictureBox25);
             this.panel27.Controls.Add(this.pictureBox26);
             this.panel27.Controls.Add(this.pictureBox22);
-            this.panel27.Location = new System.Drawing.Point(-3, -4);
+            this.panel27.Location = new System.Drawing.Point(-5, -2);
             this.panel27.Name = "panel27";
             this.panel27.Size = new System.Drawing.Size(838, 574);
             this.panel27.TabIndex = 70;
             this.panel27.Paint += new System.Windows.Forms.PaintEventHandler(this.panel27_Paint);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.White;
+            this.label1.Location = new System.Drawing.Point(414, 156);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(20, 13);
+            this.label1.TabIndex = 71;
+            this.label1.Text = "V2";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // pictureBox27
             // 
@@ -1196,16 +1258,148 @@
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
-            // label1
+            // button9
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.White;
-            this.label1.Location = new System.Drawing.Point(414, 156);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(20, 13);
-            this.label1.TabIndex = 71;
-            this.label1.Text = "V1";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button9.Font = new System.Drawing.Font("Segoe UI Symbol", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button9.ForeColor = System.Drawing.Color.White;
+            this.button9.Location = new System.Drawing.Point(43, 440);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(190, 61);
+            this.button9.TabIndex = 78;
+            this.button9.Text = "ADVANCED SETTINGS";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // AdvancedSettingsPanel
+            // 
+            this.AdvancedSettingsPanel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.AdvancedSettingsPanel.Controls.Add(this.label12);
+            this.AdvancedSettingsPanel.Controls.Add(this.checkBox12);
+            this.AdvancedSettingsPanel.Controls.Add(this.sensitivityLabel);
+            this.AdvancedSettingsPanel.Controls.Add(this.sensitivityTrackBar);
+            this.AdvancedSettingsPanel.Controls.Add(this.label11);
+            this.AdvancedSettingsPanel.Controls.Add(this.checkBox10);
+            this.AdvancedSettingsPanel.Controls.Add(this.button10);
+            this.AdvancedSettingsPanel.Controls.Add(this.checkBox11);
+            this.AdvancedSettingsPanel.Controls.Add(this.label10);
+            this.AdvancedSettingsPanel.Location = new System.Drawing.Point(102, 97);
+            this.AdvancedSettingsPanel.Name = "AdvancedSettingsPanel";
+            this.AdvancedSettingsPanel.Size = new System.Drawing.Size(624, 387);
+            this.AdvancedSettingsPanel.TabIndex = 78;
+            this.AdvancedSettingsPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.AdvancedSettingsPanel_Paint);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.ForeColor = System.Drawing.Color.White;
+            this.label10.Location = new System.Drawing.Point(12, 56);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(145, 20);
+            this.label10.TabIndex = 87;
+            this.label10.Text = "Smoothing method :";
+            this.label10.Click += new System.EventHandler(this.label10_Click);
+            // 
+            // button10
+            // 
+            this.button10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button10.Font = new System.Drawing.Font("Segoe UI Symbol", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button10.ForeColor = System.Drawing.Color.White;
+            this.button10.Location = new System.Drawing.Point(567, 9);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(40, 36);
+            this.button10.TabIndex = 87;
+            this.button10.Text = "X";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // checkBox10
+            // 
+            this.checkBox10.AutoSize = true;
+            this.checkBox10.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox10.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox10.ForeColor = System.Drawing.Color.White;
+            this.checkBox10.Location = new System.Drawing.Point(168, 87);
+            this.checkBox10.Name = "checkBox10";
+            this.checkBox10.Size = new System.Drawing.Size(187, 25);
+            this.checkBox10.TabIndex = 88;
+            this.checkBox10.Text = "Exponential Smoothing";
+            this.checkBox10.UseVisualStyleBackColor = true;
+            this.checkBox10.CheckedChanged += new System.EventHandler(this.checkBox10_CheckedChanged);
+            // 
+            // checkBox11
+            // 
+            this.checkBox11.AutoSize = true;
+            this.checkBox11.Checked = true;
+            this.checkBox11.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox11.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox11.ForeColor = System.Drawing.Color.White;
+            this.checkBox11.Location = new System.Drawing.Point(168, 56);
+            this.checkBox11.Name = "checkBox11";
+            this.checkBox11.Size = new System.Drawing.Size(162, 25);
+            this.checkBox11.TabIndex = 87;
+            this.checkBox11.Text = "Linear Interpolation";
+            this.checkBox11.UseVisualStyleBackColor = true;
+            this.checkBox11.CheckedChanged += new System.EventHandler(this.checkBox11_CheckedChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.ForeColor = System.Drawing.Color.White;
+            this.label11.Location = new System.Drawing.Point(12, 134);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(115, 20);
+            this.label11.TabIndex = 89;
+            this.label11.Text = "Stick sensitivity :";
+            // 
+            // sensitivityTrackBar
+            // 
+            this.sensitivityTrackBar.Location = new System.Drawing.Point(136, 138);
+            this.sensitivityTrackBar.Name = "sensitivityTrackBar";
+            this.sensitivityTrackBar.Size = new System.Drawing.Size(257, 45);
+            this.sensitivityTrackBar.TabIndex = 90;
+            this.sensitivityTrackBar.Value = 4;
+            this.sensitivityTrackBar.Scroll += new System.EventHandler(this.sensitivityTrackBar_Scroll);
+            // 
+            // sensitivityLabel
+            // 
+            this.sensitivityLabel.AutoSize = true;
+            this.sensitivityLabel.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sensitivityLabel.ForeColor = System.Drawing.Color.White;
+            this.sensitivityLabel.Location = new System.Drawing.Point(399, 144);
+            this.sensitivityLabel.Name = "sensitivityLabel";
+            this.sensitivityLabel.Size = new System.Drawing.Size(90, 20);
+            this.sensitivityLabel.TabIndex = 91;
+            this.sensitivityLabel.Text = "Sensitivity: 4";
+            // 
+            // checkBox12
+            // 
+            this.checkBox12.AutoSize = true;
+            this.checkBox12.Checked = true;
+            this.checkBox12.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkBox12.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox12.ForeColor = System.Drawing.Color.White;
+            this.checkBox12.Location = new System.Drawing.Point(16, 192);
+            this.checkBox12.Name = "checkBox12";
+            this.checkBox12.Size = new System.Drawing.Size(168, 25);
+            this.checkBox12.TabIndex = 93;
+            this.checkBox12.Text = "Adaptive Smoothing";
+            this.checkBox12.UseVisualStyleBackColor = true;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.ForeColor = System.Drawing.Color.White;
+            this.label12.Location = new System.Drawing.Point(9, 11);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(185, 30);
+            this.label12.TabIndex = 87;
+            this.label12.Text = "Advanced Settings";
             // 
             // VController
             // 
@@ -1214,7 +1408,6 @@
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(24)))), ((int)(((byte)(24)))), ((int)(((byte)(24)))));
             this.ClientSize = new System.Drawing.Size(831, 562);
             this.Controls.Add(this.panel27);
-            this.Controls.Add(this.panel25);
             this.Controls.Add(this.panel23);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button1);
@@ -1322,6 +1515,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.AdvancedSettingsPanel.ResumeLayout(false);
+            this.AdvancedSettingsPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.sensitivityTrackBar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1424,6 +1620,19 @@
         private System.Windows.Forms.PictureBox pictureBox26;
         private System.Windows.Forms.PictureBox pictureBox27;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox checkBox7;
+        private System.Windows.Forms.CheckBox checkBox9;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Panel AdvancedSettingsPanel;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox checkBox10;
+        private System.Windows.Forms.CheckBox checkBox11;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TrackBar sensitivityTrackBar;
+        private System.Windows.Forms.Label sensitivityLabel;
+        private System.Windows.Forms.CheckBox checkBox12;
+        private System.Windows.Forms.Label label12;
     }
 }
 

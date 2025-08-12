@@ -34,5 +34,197 @@ namespace VController.Properties {
                 this["ShowPanel25Message"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LB_Key {
+            get {
+                return ((string)(this["LB_Key"]));
+            }
+            set {
+                this["LB_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DPadUp_Key {
+            get {
+                return ((string)(this["DPadUp_Key"]));
+            }
+            set {
+                this["DPadUp_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DPadLeft_Key {
+            get {
+                return ((string)(this["DPadLeft_Key"]));
+            }
+            set {
+                this["DPadLeft_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DPadDown_Key {
+            get {
+                return ((string)(this["DPadDown_Key"]));
+            }
+            set {
+                this["DPadDown_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DPadRight_Key {
+            get {
+                return ((string)(this["DPadRight_Key"]));
+            }
+            set {
+                this["DPadRight_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RightStick_Key {
+            get {
+                return ((string)(this["RightStick_Key"]));
+            }
+            set {
+                this["RightStick_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string A_Key {
+            get {
+                return ((string)(this["A_Key"]));
+            }
+            set {
+                this["A_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string B_Key {
+            get {
+                return ((string)(this["B_Key"]));
+            }
+            set {
+                this["B_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Y_Key {
+            get {
+                return ((string)(this["Y_Key"]));
+            }
+            set {
+                this["Y_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string X_Key {
+            get {
+                return ((string)(this["X_Key"]));
+            }
+            set {
+                this["X_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RB_Key {
+            get {
+                return ((string)(this["RB_Key"]));
+            }
+            set {
+                this["RB_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RT_Key {
+            get {
+                return ((string)(this["RT_Key"]));
+            }
+            set {
+                this["RT_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string LT_Key {
+            get {
+                return ((string)(this["LT_Key"]));
+            }
+            set {
+                this["LT_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Start_Key {
+            get {
+                return ((string)(this["Start_Key"]));
+            }
+            set {
+                this["Start_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Select_Key {
+            get {
+                return ((string)(this["Select_Key"]));
+            }
+            set {
+                this["Select_Key"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int Sensitivity {
+            get {
+                return ((int)(this["Sensitivity"]));
+            }
+            set {
+                this["Sensitivity"] = value;
+            }
+        }
     }
 }
