@@ -26,7 +26,7 @@ VController does not collect, store, or transmit any personal data. All processi
 VController was created to help users with alternative input needs, testing setups, or accessibility scenarios. Any misuse of this tool falls solely on the user and is not condoned by the developer.
 
 🧰 Troubleshooting
-If VController isn’t working as expected, check that all drivers are correctly installed, especially ViGEmBus. Restarting your PC or running the app as administrator can solve common issues.
+If VController isn’t working as expected, check that all drivers are correctly installed, especially ViGEmBus. Restarting your PC or running the app as administrator can solve common issues. The source code is only in version 1.0.
 
 🌎 Website
 https://mrpenguin-0.github.io/VControllerWebsite/
